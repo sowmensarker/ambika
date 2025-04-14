@@ -135,7 +135,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                     </button>
                   </DrawerTrigger>
 
-                  <DrawerContent className="bg-[#202947] w-60 text-white border-none p-3">
+                  <DrawerContent className="bg-[#202947] w-60 text-white border-none p-3 overflow-auto ">
                     <DrawerHeader className="text-left ">
                       <DrawerTitle className="text-2xl font-medium text-white">
                         Ambika
