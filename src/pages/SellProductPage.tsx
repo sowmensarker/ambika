@@ -216,7 +216,6 @@ function SellProductPage() {
                             total_price: "",
                           },
                         ]);
-                        console.log(soldItems);
                       }}
                       type="button"
                       size={"sm"}
