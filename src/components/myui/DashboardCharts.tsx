@@ -15,17 +15,55 @@ import { dateRangeType } from "./DateRangeSelector";
 import { AddedProductTypes } from "@/firebase/ProductAddFirebase";
 import { SoldProductDataType } from "@/firebase/SoldProductFirebase";
 import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { getDatesByRange } from "@/utils/getDateByRange";
+import { getDataByRangeFirebase } from "@/firebase/getDataByRangeFirebase";
+import { toast } from "sonner";
 
 function DashboardCharts({
   dateRange,
-  data,
 }: {
   dateRange: dateRangeType["dateRange"];
-  data: {
+}) {
+  const [data, setData] = useState<{
     addedProducts: AddedProductTypes[] | null;
     soldProducts: SoldProductDataType[] | null;
-  };
-}) {
+  }>({
+    addedProducts: null,
+    soldProducts: null,
+  });
+  const fetchData = useCallback(async () => {
+    try {
+      const [fromDate, toDate] = getDatesByRange(dateRange);
+      const addedProductData = (await getDataByRangeFirebase(
+        "addedProductData",
+        "productAddedAt",
+        fromDate,
+        toDate
+      )) as AddedProductTypes[];
+
+      const soldProductData = (await getDataByRangeFirebase(
+        "soldProductData",
+        "soldAt",
+        fromDate,
+        toDate
+      )) as SoldProductDataType[];
+
+      setData({
+        addedProducts: addedProductData,
+        soldProducts: soldProductData,
+      });
+    } catch (error) {
+      toast.error("Failed To Load Data", {
+        description: String(error),
+      });
+      console.error(error);
+    }
+  }, [dateRange]);
+  useEffect(() => {
+    fetchData();
+  }, [dateRange, fetchData]);
+
   const totalQuantityPerDay = () => {
     if (!data.soldProducts) return;
     const quantityMap = new Map<string, number>();

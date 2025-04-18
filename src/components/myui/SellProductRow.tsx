@@ -23,7 +23,7 @@ function SellProductRow({
   const [productData, setProductData] = useState<StockProduct | null>(null);
 
   const handleProductIdChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const newProductId = e.target.value.trim().toUpperCase();
+    const newProductId = e.target.value.toString().trim().toUpperCase();
     onChange({
       ...item,
       productId: newProductId,
@@ -34,10 +34,10 @@ function SellProductRow({
       const allStockData = await getStockProduct();
       if (!allStockData) throw new Error("No stock data found.");
       // Filter the stock data to find the product with the matching ID
-      const matched = allStockData.filter((p) =>
-        newProductId.toUpperCase().includes(p.productId.toUpperCase())
+      const matched = allStockData.filter(
+        (p) => newProductId === p.productId.toString().trim().toUpperCase()
       );
-      if (matched.length !== 1)
+      if (matched.length > 1)
         throw new Error("Product not found or duplicated.");
 
       const product = matched[0];
